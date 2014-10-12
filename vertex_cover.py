@@ -12,6 +12,12 @@ def loadGraph(fileName):
   map(lambda l: addLineToGraph(graph, l), open(fileName)) 
   return graph
 
+def writeGraph(graph, fileName):
+  f = open(fileName+'_dual', 'w')
+  for e in graph.edges_iter():
+    f.write('%s\t%s\n'%(e[0], e[1]))
+  f.close()
+  
 
 def getGraphDual(graph):
   
@@ -19,7 +25,9 @@ def getGraphDual(graph):
     t = sorted(edge)
     return '%s_%s'%(t[0], t[1])
   
-  def addEdgeToDual(graph, dualGraph, edge):
+  def addEdgeToDual(graph, dualGraph, edgeIt):
+    it, edge = edgeIt
+    print 'Adding edge to dual graph: ', it+1, edge
     u, v = edge
     uNeighbors = set(graph.neighbors(u)) - set([v])
     vNeighbors = set(graph.neighbors(v)) - set([u])
@@ -29,7 +37,7 @@ def getGraphDual(graph):
     map(lambda t: dualGraph.add_edge(getEdgeId(t[0]), getEdgeId(t[1])), openTriangles)
   
   dualGraph = nx.Graph()
-  map(lambda edge: addEdgeToDual(graph, dualGraph, edge), graph.edges_iter())
+  map(lambda edgeIt: addEdgeToDual(graph, dualGraph, edgeIt), enumerate(graph.edges_iter()))
   return dualGraph
 
 # This method modifies input graph.
@@ -49,9 +57,12 @@ def getVertexCoverGreedy(graph):
   return vertexCoverSet
 
 
-graph = loadGraph("demo_graph")
-dualGraph = getGraphDual(graph)
-print getVertexCoverGreedy(dualGraph)
-print min_weighted_vertex_cover(getGraphDual(graph))
+if __name__ == '__main__':
+  inputGraphFile = 'data/demo_graph'
+  graph = loadGraph(inputGraphFile)
+  dualGraph = getGraphDual(graph)
+  writeGraph(dualGraph, inputGraphFile)
+  print getVertexCoverGreedy(dualGraph)
+# print min_weighted_vertex_cover(getGraphDual(graph))
 
 
