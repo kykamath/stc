@@ -1,6 +1,7 @@
 from networkx.algorithms.approximation.vertex_cover import min_weighted_vertex_cover
 import networkx as nx
 import matplotlib.pyplot as plt
+import sys
 
 def loadGraph(fileName):
   
@@ -12,10 +13,15 @@ def loadGraph(fileName):
   map(lambda l: addLineToGraph(graph, l), open(fileName)) 
   return graph
 
-def writeGraph(graph, fileName):
+def writeDualGraph(graph, fileName):
   f = open(fileName+'_dual', 'w')
   for e in graph.edges_iter():
     f.write('%s\t%s\n'%(e[0], e[1]))
+  f.close()
+  
+def writeVertexCover(vertexCover, fileName):
+  f = open(fileName+'_vertex_cover', 'w')
+  for v in vertexCover: f.write('%s\n'%v)
   f.close()
   
 
@@ -58,11 +64,12 @@ def getVertexCoverGreedy(graph):
 
 
 if __name__ == '__main__':
-  inputGraphFile = 'data/demo_graph'
+  inputGraphFile = sys.argv[1]
   graph = loadGraph(inputGraphFile)
   dualGraph = getGraphDual(graph)
-  writeGraph(dualGraph, inputGraphFile)
-  print getVertexCoverGreedy(dualGraph)
+  writeDualGraph(dualGraph, inputGraphFile)
+  writeVertexCover(getVertexCoverGreedy(dualGraph), inputGraphFile)
+  
 # print min_weighted_vertex_cover(getGraphDual(graph))
 
 
