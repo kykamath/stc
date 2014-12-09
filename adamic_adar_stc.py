@@ -61,20 +61,25 @@ def printTopFollowEdgesPerNode(graph, mf_edge_to_score):
     sortedItems = filter(lambda t: t[0] in neighbors, sortedItems)
     print k, ','.join('%s:%s'%(t[0], t[1]) for t in sortedItems)
     
-def printStrongTies(graph, userNode):
+def printStrongTies(graph, user_node, user_name, filter_follow = False):
   mf_edge_to_score = {}
   mf_node_to_score = {}
-  print fillAdamicScore(graph, userNode, mf_edge_to_score)
+  fillAdamicScore(graph, user_node, mf_edge_to_score)
   for edge in mf_edge_to_score:
     (u, v) = getEdge(edge)
     node = None
-    if u != userNode: node = u
+    if u != user_node: node = u
     else: node = v
     mf_node_to_score[node] = mf_edge_to_score[edge]
-  neighbors = graph.neighbors(userNode)
+  neighbors = graph.neighbors(user_node)
   sortedItems = sorted(mf_node_to_score.items(), key=lambda t: t[1])
-  sortedItems = filter(lambda t: t[0] in neighbors, sortedItems)
-  print sortedItems
+  type = 'follow_not_filtered'
+  if filter_follow: 
+    type = 'follow_filtered'
+    sortedItems = filter(lambda t: t[0] in neighbors, sortedItems)
+  f = open('data/adamic_adar_%s_%s'%(user_name, type), 'w')
+  for i in ('%s:%s\n'%(t[0], t[1]) for t in sortedItems): f.write(i)
+  f.close()
 
 def getSTCProbabilities(graph):
   mf_edge_to_score = {}
@@ -88,6 +93,8 @@ def getSTCProbabilities(graph):
 if __name__ == '__main__':
 #   getSTCProbabilities(loadGraph('data/demo_graph'))  
 #   getSTCProbabilities(loadGraph('data/edges_5867')) 
-  printStrongTies(loadGraph('data/edges_5867'), '18929196') 
-  
+
+#   printStrongTies(loadGraph('data/edges_5867'), '18929196', 'krishna_kamath', True) 
+#   printStrongTies(loadGraph('data/edges_5867'), '1479414775', 'nayanakamath23', True) 
+  printStrongTies(loadGraph('data/edges_5867'), '27731964', 'aneeshs', False)
   
