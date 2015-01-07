@@ -172,13 +172,13 @@ if __name__ == '__main__':
 #   getSTCProbabilities(loadGraph('data/edges_5867')) 
 
 #   printStrongTiesAdamicAdar(loadGraph('data/edges_5867'), '1479414775', 'nayanakamath23', True) 
-  printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '1479414775', 'nayanakamath23', True, 0.5) 
+  printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '1479414775', 'nayanakamath23', True, 0.0) 
   
 #   printStrongTiesAdamicAdar(loadGraph('data/edges_5867'), '18929196', 'krishna_kamath', True) 
-  printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '18929196', 'krishna_kamath', True, 0.5) 
+  printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '18929196', 'krishna_kamath', True, 0.0) 
 
 #   printStrongTiesAdamicAdar(loadGraph('data/edges_5867'), '27731964', 'aneeshs', True) 
-  printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '27731964', 'aneeshs', True, 0.5) 
+  printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '27731964', 'aneeshs', True, 0.0) 
 
 
   
