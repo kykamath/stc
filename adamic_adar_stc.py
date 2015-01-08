@@ -101,6 +101,9 @@ def printStrongTiesAdamicAdarDispersion(graph, user_node, user_name, filter_foll
   if filter_follow: 
     type = 'follow_filtered'
     sortedItems = filter(lambda t: t[0] in neighbors, sortedItems)
+  else:
+    type = 'recs'
+    sortedItems = filter(lambda t: t[0] not in neighbors, sortedItems)
   f = open('data/adamic_adar_dispersion_%s_%s_%s'%(user_name, type, lmbda), 'w')
   for i in ('%s:%s\n'%(t[0], t[1]) for t in sortedItems): f.write(i)
   f.close()
@@ -171,14 +174,19 @@ if __name__ == '__main__':
 #   getSTCProbabilities(loadGraph('data/demo_graph'))  
 #   getSTCProbabilities(loadGraph('data/edges_5867')) 
 
-#   printStrongTiesAdamicAdar(loadGraph('data/edges_5867'), '1479414775', 'nayanakamath23', True) 
-  printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '1479414775', 'nayanakamath23', True, 0.0) 
+  lmbda = 0.0
+  for lmbda in [0.0, 0.25, 0.5, 0.75, 1.0]:
+  #   printStrongTiesAdamicAdar(loadGraph('data/edges_5867'), '1479414775', 'nayanakamath23', True) 
+  #   printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '1479414775', 'nayanakamath23', True, lmbda) 
+    printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '1479414775', 'nayanakamath23', False, lmbda) 
+    
+  #   printStrongTiesAdamicAdar(loadGraph('data/edges_5867'), '18929196', 'krishna_kamath', True) 
+  #   printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '18929196', 'krishna_kamath', True, lmbda) 
+    printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '18929196', 'krishna_kamath', False, lmbda) 
   
-#   printStrongTiesAdamicAdar(loadGraph('data/edges_5867'), '18929196', 'krishna_kamath', True) 
-  printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '18929196', 'krishna_kamath', True, 0.0) 
-
-#   printStrongTiesAdamicAdar(loadGraph('data/edges_5867'), '27731964', 'aneeshs', True) 
-  printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '27731964', 'aneeshs', True, 0.0) 
+  #   printStrongTiesAdamicAdar(loadGraph('data/edges_5867'), '27731964', 'aneeshs', True) 
+  #   printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '27731964', 'aneeshs', True, lmbda) 
+    printStrongTiesAdamicAdarDispersion(loadGraph('data/edges_5867'), '27731964', 'aneeshs', False, lmbda) 
 
 
   
