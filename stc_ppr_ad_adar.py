@@ -1,5 +1,5 @@
 import networkx as nx
-from multiprocessing import Process, Manager
+import math
 
 alpha = 0.65
 
@@ -16,17 +16,7 @@ def getPPRCandidates(graph, validUsers):
   for u in validUsers: candidates+=(graph.neighbors(u) + [u])
   return list(set(candidates))
 
-def getPPR(candidate, graph, return_dict): 
-  print candidate
-  personalization = dict([(k, 0.0) for k in graph.nodes()])
-  personalization[candidate] = 1.0
-  mf_user_to_score = nx.pagerank(graph, alpha=alpha, personalization = personalization)
-  
-  neighbors = graph.neighbors(candidate)
-  num_neighbors = len(neighbors)
-  return_dict[candidate] = ["\t".join(map(str, [candidate, num_neighbors, k, mf_user_to_score[k]])) for k in neighbors]
-  
-# def getPPR(candidate, valid_users, graph): 
+# def getPPR(candidate, graph, return_dict): 
 #   print candidate
 #   personalization = dict([(k, 0.0) for k in graph.nodes()])
 #   personalization[candidate] = 1.0
@@ -34,9 +24,8 @@ def getPPR(candidate, graph, return_dict):
 #   
 #   neighbors = graph.neighbors(candidate)
 #   num_neighbors = len(neighbors)
-#   offset = 1.0/num_neighbors
-#   return ["\t".join(map(str, [candidate, num_neighbors, k, mf_user_to_score[k]-offset])) for k in neighbors]
-
+#   return_dict[candidate] = ["\t".join(map(str, [candidate, num_neighbors, k, mf_user_to_score[k]])) for k in neighbors]
+  
 def getPPRForUserPair(user1, user2, graph):
   print user1, user2
   personalization = dict([(k, 0.0) for k in graph.nodes()])
@@ -68,46 +57,29 @@ def getPPR(candidate, valid_users, graph):
         ppr+=getPPRForUserPairWithoutRemovingEdge(candidate, valid_user, graph) 
         ppr+=getPPRForUserPairWithoutRemovingEdge(valid_user, candidate, graph) 
     for p in ppr: print p
-    return ppr 
-# def getPPR(candidate, graph): 
-#   personalization = dict([(k, 0.0) for k in graph.nodes()])
-#   personalization[candidate] = 1.0
-#   mf_user_to_score = nx.pagerank(graph, alpha=alpha, personalization = personalization)
-#   
-#   neighbors = graph.neighbors(candidate)
-#   num_neighbors = len(neighbors)
-#   return ["\t".join(map(str, [candidate, num_neighbors, k, mf_user_to_score[k]])) for k in neighbors]
+    return ppr
+  
+def updateWeights(G):
+  W = G.to_directed()
+  outdegrees = W.out_degree()
+  for (u,v, data) in W.edges(data=True): data['weight'] = 1/math.log(outdegrees[v]+2) 
+  return W
 
-# if __name__ == '__main__':
-#   valid_users = [18929196, 27731964]
-#   graph = "edges_5867"
-#   graph_file = "data/%s"%(graph)
-#   graph = loadGraph(graph_file)
-#   candidates = getPPRCandidates(graph, valid_users)
-#   for v in getPPR(18929196, graph):
-#     print v
-
+  
 if __name__ == '__main__':
 #   valid_users = [18929196, 27731964, 1479414775]
-#   
 #   graph = "edges_5867"
 #   graph_file = "data/%s"%(graph)
-#   output_file = open("data/%s_ppr_with_and_without_edge_%s"%(graph, alpha), "w")
-#   
+#   output_file = open("data/%s_ppr_with_and_without_edge_adamic_adar_%s"%(graph, alpha), "w")
 #   graph = loadGraph(graph_file)
-#   
-#   candidates = getPPRCandidates(graph, valid_users)
-#   for c in candidates:
-#     for s in getPPR(c, valid_users, graph): output_file.write(s + "\n")
 
-  valid_users = [0, 33]
-  output_file = open("data/karate_club_%s"%(alpha), "w")
-  graph = nx.karate_club_graph()
+  valid_users = [1]
+  output_file = open("data/%s_%s"%("kk", alpha), "w")
+  graph=nx.karate_club_graph() 
   
-  candidates = getPPRCandidates(graph, valid_users)
+  
+  weighted_graph = updateWeights(graph)
+   
+  candidates = getPPRCandidates(weighted_graph, valid_users)
   for c in candidates:
-    for s in getPPR(c, valid_users, graph): output_file.write(s + "\n")
-
-
-  
-
+    for s in getPPR(c, valid_users, weighted_graph): output_file.write(s + "\n")
