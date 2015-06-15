@@ -19,8 +19,12 @@ def mutualFollow(graph, output_file_name):
     outputFile.write(line)
   outputFile.close()
 
-def adamic_adar(u, v, graph): 
-  for e in nx.adamic_adar_index(graph): print e
+def adamic_adar(graph, output_file_name): 
+  outputFile = open(output_file_name + "_adamic_adar", 'w')
+  for (u, v, score) in nx.adamic_adar_index(graph, graph.edges()): 
+    line = outputFormat(u, v, score)
+    outputFile.write(line)
+  outputFile.close()
 
 if __name__ == '__main__':
   graph_file = 'data/actors_2500.graph'
@@ -30,5 +34,7 @@ if __name__ == '__main__':
 #   5619
 #   67154
   
-  mutualFollow(graph, "data/actors_2500_%s"%num_edges)
+#   mutualFollow(graph, "data/actors_2500_%s"%num_edges)
+  adamic_adar(graph, "data/actors_2500_%s"%num_edges)
+  
 #     print mutualFollow(u, v, graph)
